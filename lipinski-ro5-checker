@@ -18,17 +18,46 @@ molecules = {
     "ethanol": "CCO",
 }
 
+# Gets properties from the chem.csv and adds them to a dictionary for each molecule
 
 def get_properties(smiles):
 
     mol = Chem.MolFromSmiles(smiles)
 
+    properties = {
+        "smiles": smiles,
+        "mol_weight": Descriptors.MolWt(mol),
+        "logp": Descriptors.MolLogP(mol),
+        "h_donors": Descriptors.NumHDonors(mol),
+        "h_acceptors": Descriptors.NumHAcceptors(mol),
+        "tpsa": Descriptors.TPSA(mol),
+    }
 
-    Weight=Descriptors.MolWt(mol)
-    LogP=Descriptors.MolLogP(mol)
-    return(Weight, LogP)
+    return properties
 
 
+def lipinski_check(properties):
+    x=0
+    if properties.get("mol_weight") >= 500:
+        x=+1
+        print("The molecular weight is too high (Above 500)")
+    if properties.get("logp") >=5:
+        x=+1
+        print("The logp value is too large (More than 5)")
+    if properties.get("h_donors") >=5:
+        x=+1
+        print("Their are too many h_donors (More than 5)")
+    if properties.get("h_acceptors") >=10:
+        x=+1
+        print("Their are too many h_acceptors (More than 10)")
+    if properties.get("tpsa") > 140:
+        x=+1
+        print("The TPSA value is too high (Above 140)")
+    if x == 0:
+        print("This molecule passes all the lipinski rules")
+    elif x> 0:
+        print("This molecule passes ", 5-x ," tests but fails", x ,"tests")
+    return
 
 
 
@@ -36,5 +65,7 @@ for name, smiles in molecules.items():
     mol = Chem.MolFromSmiles(smiles)
     print(name, "->", mol.GetNumAtoms(), "heavy atoms")
     print(get_properties(smiles))
-    img = Draw.MolToImage(mol)
-    img.show()
+    lipinski_check(get_properties(smiles))
+
+    #     img = Draw.MolToImage(mol)
+    #img.show()
