@@ -1,0 +1,40 @@
+
+
+import numpy
+import rdkit 
+import pandas
+
+from rdkit import Chem
+from rdkit.Chem import Draw
+from rdkit.Chem import Descriptors
+
+# Load a molecule from a SMILES string
+mol = Chem.MolFromSmiles('')  
+
+molecules = {
+    "aspirin": "CC(=O)OC1=CC=CC=C1C(=O)O",
+    "caffeine": "CN1C=NC2=C1C(=O)N(C(=O)N2C)C",
+    "paracetamol": "CC(=O)NC1=CC=C(C=C1)O",
+    "ethanol": "CCO",
+}
+
+
+def get_properties(smiles):
+
+    mol = Chem.MolFromSmiles(smiles)
+
+
+    Weight=Descriptors.MolWt(mol)
+    LogP=Descriptors.MolLogP(mol)
+    return(Weight, LogP)
+
+
+
+
+
+for name, smiles in molecules.items():
+    mol = Chem.MolFromSmiles(smiles)
+    print(name, "->", mol.GetNumAtoms(), "heavy atoms")
+    print(get_properties(smiles))
+    img = Draw.MolToImage(mol)
+    img.show()
