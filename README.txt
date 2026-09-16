@@ -1,0 +1,1 @@
+Hi guys, this is a basic lipinski ro5 checker to test your molecules against. Just making this to get soem hands on experience with rdkit!
