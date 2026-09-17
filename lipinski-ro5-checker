@@ -9,25 +9,25 @@ from rdkit import Chem
 from rdkit.Chem import Draw
 from rdkit.Chem import Descriptors
 
-##parser = argparse.ArgumentParser(description="Check a molecule against Lipinski's Rule of 5")
-##parser.add_argument("smiles", help="SMILES string of the molecule to check")
+parser = argparse.ArgumentParser(description="Check a molecule against Lipinski's Rule of 5")
+parser.add_argument("smiles", help="SMILES string of the molecule to check")
+parser.add_argument("--name", default=None, help="Optional name for the molecule")
+args = parser.parse_args()
 
-##args = parser.parse_args()
+molecule_name = args.name if args.name else args.smiles     
+molecule_dict={molecule_name: args.smiles}
 
-##mol = Chem.MolFromSmiles(args.smiles)
-
-
-
+mol = Chem.MolFromSmiles(args.smiles)
 # Load a molecule from a SMILES string
-mol = Chem.MolFromSmiles('')  
+#mol = Chem.MolFromSmiles('')  
 
-molecules = {
-    "COMPOUND CRAZY" : "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC",
-    "aspirin": "CC(=O)OC1=CC=CC=C1C(=O)O",
-    "caffeine": "CN1C=NC2=C1C(=O)N(C(=O)N2C)C",
-    "paracetamol": "CC(=O)NC1=CC=C(C=C1)O",
-    "ethanol": "CCO",
-}
+#molecules = {
+#    "COMPOUND CRAZY" : "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC",
+#    "aspirin": "CC(=O)OC1=CC=CC=C1C(=O)O",
+#    "caffeine": "CN1C=NC2=C1C(=O)N(C(=O)N2C)C",
+#    "paracetamol": "CC(=O)NC1=CC=C(C=C1)O",
+#    "ethanol": "CCO",
+#}
 
 # Gets properties from the chem.csv and adds them to a dictionary for each molecule!
 
@@ -71,8 +71,8 @@ def lipinski_check(properties):
 
 
 
-def full_breakdown(molecules):
-    for name, smiles in molecules.items():
+def full_breakdown(molecule_dict):
+    for name, smiles in molecule_dict.items():
         mol = Chem.MolFromSmiles(smiles)
         if mol is None:
             print(f"{name}: invalid SMILES - {smiles}")
@@ -82,8 +82,8 @@ def full_breakdown(molecules):
         lipinski_check(get_properties(smiles))
 
 
-def minione(molecules):
-    for name, smiles in molecules.items():
+def minione(molecule_dict):
+    for name, smiles in molecule_dict.items():
         mol = Chem.MolFromSmiles(smiles)
         if mol is None:
             print(f"{name}: invalid SMILES - {smiles}")
@@ -97,10 +97,10 @@ def minione(molecules):
 print("Hello would you like the full breakdown or just the lipinsky rules? Please enter Y for the full molecular breakdown else press any key if you are only interested in if it meets the lipinski rules")
 yesNO=input("")
 
-if yesNO == "Y" or yesNO == "y":
-    full_breakdown(molecules)
+if yesNO.strip().lower() in ("y", "yes"):
+    full_breakdown(molecule_dict)
 else :
-    minione(molecules)
+    minione(molecule_dict)
 
 
 
